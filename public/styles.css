@@ -1,0 +1,111 @@
+.login-form {
+    width: 300px;
+    font-family: Tahoma, Geneva, sans-serif;
+    margin: 40px;
+    text-align: center;
+    color: white;
+};
+
+
+.login-form h1 {
+    text-align: center;
+    color: #4d4d4d;
+    font-size: 24px;
+    padding: 20px 0 20px 0;
+}
+.login-form h2 {
+    text-align: center;
+    font-size: 10px;
+    padding: 0 0 0 0;
+
+}
+.login-form input[type="email"],
+.login-form input[type="password"],
+.login-form input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    box-sizing:border-box;
+    background-color: rgb(189, 189, 189);
+    /* color: white; */
+}
+.login-form input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: rgb(88, 101, 242);
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    /* color: #ffffff; */
+}
+
+.redNote {
+    margin: 10px;
+    padding: 10px;
+    border: 2px solid ;
+    border-radius: 5px;
+    background-color: rgb(255, 50, 50);
+    text-align: center;
+    display: block;
+    text-decoration: none;
+};
+
+.changeAuth {
+    width: 20rem;
+    padding: 15px;
+    background-color: pink;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+#danbot-logo {
+    border-radius: 50%;
+}
+body{
+    background-color:#23272a;
+    display: flex;
+    justify-content: center;
+
+};
+
+.middle-menu {
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.backButton{
+    position: fixed;
+    width: 100px;
+    height: 50px;
+    left: 1rem;
+    top: 1rem;
+    border-radius: 20%;
+    opacity: 0.5;
+    background-color: rgb(88, 101, 242);
+    color: white;
+};
+
+a:link {
+    color: white;
+  }
+  
+  /* visited link */
+  a:visited {
+    color: white;
+  }
+  
+  /* mouse over link */
+  a:hover {
+    color: rgb(88, 101, 242);
+  }
+  
+  /* selected link */
+  a:active {
+    color: blue;
+  }

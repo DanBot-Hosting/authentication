@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="icon" href="logo.webp" type="logo.webp" sizes="16x16">
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://www.google.com/recaptcha/api.js?render=6Lc6dnwbAAAAAO4ipZBV07SNaehahLi61GDpxPkJ"></script>	
+		<meta charset="utf-8">
+		<title>Reset - DanBot Auth</title>
+	</head>
+	<button class="backButton" onclick="history.back(-1)">Back</button>
+
+	<body>
+		<div class="middle-menu" >
+			<div class="login-form ">
+				<img src="../logo.webp" alt="Danbot Logo" id="danbot-logo" draggable="false" />
+				<h1>Enter your new password</h1>
+				<div  id="error"></div>
+				<form action="/reset-new" method="POST" onsubmit="onsubmitLogin()">
+					<input type="password" name="new-password" placeholder="Password" required>
+					<input type="password" name="confirm-password" placeholder="Confirm Password" required>
+					<input type="hidden" id="service" name="service">
+					<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+					<input type="hidden" id="token" name="token">
+					<input type="submit" value="Reset">
+				</form>
+				<a onclick="window.location='/login'+window.location.search;" class="changeAuth" class="changeAuth" ><p>Back To Login</p></a>
+			</div>
+		</div>
+	</body>
+	<script src="../script.js"></script>
+
+</html>
