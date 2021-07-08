@@ -171,7 +171,6 @@ app.post('/register', async (req, res) => {
     const g_recaptcha_response = req.body['g-recaptcha-response'];
     const new_password = req.body['new-password'];
     const confirm_password = req.body['confirm-password'];
-    console.log(!username, !email , !service , !g_recaptcha_response , !new_password , !confirm_password)
     if (!username || !email || !service || !g_recaptcha_response || !new_password || !confirm_password) return res.sendStatus(400);
     const serviceURL = services.get(service);
     if (!serviceURL) return res.redirect(`?`);
@@ -185,10 +184,7 @@ app.post('/register', async (req, res) => {
     if (captchaResponse.success === false) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`?service=${service}&error=An error ocurred try again`);
 
-    console.log(username, email)
-
     const isUsernameTaken = await runMysql('SELECT count(username), count(email) FROM `users` WHERE `username` = ? OR `email` = ?', [username, email]);
-    console.log(isUsernameTaken)
 
     if (isUsernameTaken[0]['count(username)'] !== 0) return res.redirect(`?service=${service}&error=That username is taken!`);
     if (isUsernameTaken[0]['count(email)'] !== 0) return res.redirect(`?service=${service}&error=That email is taken!`);
@@ -196,8 +192,6 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(new_password, saltRounds);
     
     // const hashedPassword = await bcrypt.hash(new_password, saltRounds);
-
-    console.log(username, email, hashedPassword)
 
     await runMysql('INSERT INTO `users` (`username`, `email`, `password`) VALUES ( ? , ? , ? );', [username, email, hashedPassword]);
 
@@ -221,9 +215,7 @@ app.post('/login', async (req, res) => {
     const captchaResponse = await checkCaptchaResponse(g_recaptcha_response, req.ip);
     if (captchaResponse.success === false) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`?service=${service}&error=An error ocurred try again`);
-    console.log(captchaResponse);
-
-
+    
     const userData = await runMysql('SELECT * FROM `users` WHERE `username` = ? OR `email` = ? ;', [username, username]);
 
     if (userData.length === 0) return res.redirect(`?service=${service}&error=Wrong username/email or password`);
@@ -253,8 +245,6 @@ app.post('/reset', async (req, res) => {
     const captchaResponse = await checkCaptchaResponse(g_recaptcha_response, req.ip);
     if (captchaResponse.success === false) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`?service=${service}&error=An error ocurred try again`);
-    console.log(captchaResponse);
-
 
     const userData = await runMysql('SELECT * FROM `users` WHERE `email` = ? ;', [email]);
 
@@ -277,7 +267,6 @@ app.post('/reset-new', async (req, res) => {
     const captchaResponse = await checkCaptchaResponse(g_recaptcha_response, req.ip);
     if (captchaResponse.success === false) return res.redirect(`/reset/new-password?token=${token}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`/reset/new-password?token=${token}&error=An error ocurred try again`);
-    console.log(captchaResponse);
 
     if (new_password.length < 8 || new_password.length > 30 ) return res.redirect(`/reset/new-password?error=Passwords must be between 8 and 30 characters&token=${token}`);
     if (new_password !== confirm_password) return res.redirect(`/reset/new-password?error=Those passwords do not match!&token=${token}`);
