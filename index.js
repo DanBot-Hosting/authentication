@@ -107,6 +107,22 @@ const app = express();
 
 app.use(express.static('public'));
 
+app.use(async (req, res, next) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Methods", "GET, POST");
+
+    console.log(
+        (req.headers["cf-connecting-ip"] ||
+            req.headers["x-forwarded-for"] ||
+            req.ip) +
+        " [" +
+        req.method +
+        "] " +
+        req.url
+    );
+            next();
+});
+
 app.get('/login', (req, res) => {
     fs.createReadStream('./pages/login.html').pipe(res);
 });
