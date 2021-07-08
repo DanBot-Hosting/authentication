@@ -107,8 +107,6 @@ const app = express();
 
 app.use(express.static('public'));
 
-app.listen(100);
-
 app.get('/login', (req, res) => {
     fs.createReadStream('./pages/login.html').pipe(res);
 });
@@ -277,4 +275,8 @@ app.post('/reset-new', async (req, res) => {
     const userData = await runMysql('UPDATE `users` SET `password` = ? WHERE `email` = ? ;', [hashedPassword, data.email]);
 
     return res.redirect(`/login?service=${services.get(data.serviceURL)}&error=Password reset`);
+});
+
+app.listen(process.env.port, () => {
+    console.log(`[DBH] Auth server listening on port ${process.env.port}`);
 });
