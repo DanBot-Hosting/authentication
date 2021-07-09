@@ -78,7 +78,7 @@ const loginLimiter = rateLimit({
     }
 });
 
-const sendVerifyEmail = async (email, reason = 'verifyEmail', serviceURL, message = 'Please verify your email with') => {
+const sendVerifyEmail = async (email, username, ip, reason, serviceURL) => {
     const token = getToken();
 
     verification.set(token, {
@@ -88,7 +88,26 @@ const sendVerifyEmail = async (email, reason = 'verifyEmail', serviceURL, messag
         reason
     });
 
-    await sendEmail(email, 'Verify your email | DBH', ` <h1>${message}</h1><a href="http://192.168.0.27:100/verify/${token}">This link</a>`);
+    if (reason == 'verifyEmail') {
+        let content = await fs.promises.readFile('./mail/verifyEmail.html', 'utf8');
+        await sendEmail(email, 'Verify your email | DBH', content
+            .replace('{username}', username)
+            .replace('{link}', `${process.env.url}/verify/${token}`)
+            .replace('{ip}', ip)
+            .replace('{time}', new Date().toString())
+        );
+
+
+    } else if ( reason == 'resetPassword' ) {
+        console.log('Reset Pass')
+        let content = await fs.promises.readFile('./mail/passwordReset.html' ,'utf8');
+        await sendEmail(email, 'Reset your password | DBH', content
+            .replace('{username}', username)
+            .replace('{link}', `${process.env.url}/verify/${token}`)
+            .replace('{ip}', ip)
+            .replace('{time}', new Date().toString())
+        );
+    };
 
     console.log(token);
     return token;
@@ -197,7 +216,7 @@ app.post('/register', async (req, res) => {
 
     //send email code
 
-    await sendVerifyEmail(email, 'verifyEmail', serviceURL);
+    await sendVerifyEmail(email, username, req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.ip, 'verifyEmail', serviceURL);
     return res.redirect(`/verify?email=${email}`);
 });
 
@@ -224,8 +243,8 @@ app.post('/login', async (req, res) => {
 
     const user = userData[0];
     if (!user.verified) {
-        await sendVerifyEmail(user.email, 'verifyEmail', serviceURL);
-        return res.redirect(`/verify?email=${email}`);
+        await sendVerifyEmail(user.email, userData[0].username, req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.ip, 'verifyEmail', serviceURL);
+        return res.redirect(`/verify?email=${user.email}`);
     };
 
     const token = await createAuthToken(user);
@@ -250,7 +269,7 @@ app.post('/reset', async (req, res) => {
 
     if (userData.length === 0) return res.redirect(`?service=${service}&error=There is no account with that email!`);
 
-    sendVerifyEmail(email, 'resetPassword', serviceURL, 'To reset your password please verify your identity with');
+    sendVerifyEmail(email, userData[0].username, req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.ip, 'resetPassword', serviceURL, 'To reset your password please verify your identity with');
 
     return res.redirect(`/verify?email=${email}`);
 });

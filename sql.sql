@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
     `username` varchar(50) NOT NULL, 
     `password` varchar(200) NOT NULL, 
     `verified` boolean, 
+    `phone` varchar(200), 
+    `phoneVerified` boolean, 
     `discordID` varchar(20), 
     
     PRIMARY KEY (`ID`) 
