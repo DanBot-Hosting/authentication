@@ -172,7 +172,7 @@ app.get('/verify/:token', async (req, res) => {
     if (userData.length == 0) return
     const token = await createAuthToken(userData[0]);
 
-
+    verification.delete(req.params.token);
     res.redirect(`${data.serviceURL}?code=${token}`);
 
 });
@@ -298,6 +298,7 @@ app.post('/reset-new', async (req, res) => {
 
     const userData = await runMysql('UPDATE `users` SET `password` = ? WHERE `email` = ? ;', [hashedPassword, data.email]);
 
+    verification.delete(token);
     return res.redirect(`/login?service=${services.get(data.serviceURL)}&error=Password reset`);
 });
 
