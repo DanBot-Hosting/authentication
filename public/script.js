@@ -42,7 +42,11 @@ if (fatalErrorBanner) {
 
 const text = document.getElementById('text');
 if (params.email && text) {
-    text.innerHTML = `You need to verify your email address! An email has been sent to ${params.email} please open the link inside. You will only have to do this once. NOTE: the link will expire after half an hour.`;
+    let mail = params.email;
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(!re.test(String(params.email).toLowerCase())) mail = '[Invalid Email!]'
+
+    text.innerHTML = `You need to verify your email address! An email has been sent to ${mail} please open the link inside. You will only have to do this once. NOTE: the link will expire after half an hour.`;
 }
 
 function onsubmitRegister() {
@@ -54,7 +58,6 @@ function onsubmitRegister() {
     
 };
 function onsubmitLogin() {
-    console.log('dsadsa')
     localStorage.setItem('login', JSON.stringify({
         username: document.getElementById('username').value
     }))
