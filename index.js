@@ -32,12 +32,15 @@ Array.from(services.keys()).forEach(e => services.set(services.get(e), e));
 let connection;
 
 (async () => {
-    connection = await mysql.createConnection({
+    connection = await mysql.createPool({
         host: process.env.DB_host,
         port: process.env.DB_port,
         user: process.env.DB_user,
         password: process.env.DB_password,
-        database: process.env.DB_database
+        database: process.env.DB_database,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
     });
 })()
 
