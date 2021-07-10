@@ -21,6 +21,14 @@ const authDatabase = redis.createClient({
 
 const verification = new Map();
 
+const garbageCollector = setInterval( () => {
+    Array.from(verification.keys()).forEach( (key) => {
+        const data = verification.get(key);
+        console.log(key, data);
+        if (Date.now() - data.created > 1000 * 60 * 30) verification.delete(key);
+    });
+}, 1000 * 60 * 5);
+
 const services = new Map();
 // services.set('cloud', 'http://192.168.0.27:3000/callback');
 services.set('cloud', 'https://danbot.cloud/callback');
@@ -119,7 +127,19 @@ const sendVerifyEmail = async (email, username, ip, reason, serviceURL) => {
 const createAuthToken = async (user) => {
     const token = getToken(100);
 
-    await authDatabase.set(token, JSON.stringify(user));
+    await authDatabase.set(token, JSON.stringify({
+        ID: user.ID,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        created: user.created,
+        discordID: user.discordID,
+        phoneVerified: user.phoneVerified == 1,
+        beta: user.beta == 1,
+        admin: user.admin == 1,
+        banned: user.banned == 1,
+    }));
+
     await authDatabase.expire(token, 60 * 60 * 24);
 
     return token;
@@ -189,11 +209,13 @@ app.use(loginLimiter);
 
 app.post('/register', async (req, res) => {
     //input validation
-    const { username, email, service } = req.body;
+    let { username, email, service } = req.body;
     const g_recaptcha_response = req.body['g-recaptcha-response'];
     const new_password = req.body['new-password'];
     const confirm_password = req.body['confirm-password'];
     if (!username || !email || !service || !g_recaptcha_response || !new_password || !confirm_password) return res.sendStatus(400);
+    username = username.toLowerCase();
+    email = email.toLowerCase();
     const serviceURL = services.get(service);
     if (!serviceURL) return res.redirect(`?`);
     if (username.length < 3 || username.length > 20 ) return res.redirect(`?service=${service}&error=Usernames must be between 3 and 20 characters`);
@@ -225,12 +247,13 @@ app.post('/register', async (req, res) => {
 
 
 app.post('/login', async (req, res) => {
-    const { username, service } = req.body;
+    let { username, service } = req.body;
     const g_recaptcha_response = req.body['g-recaptcha-response'];
     const current_password = req.body['current-password'];
 
     if (!username || !service || !g_recaptcha_response || !current_password) return res.sendStatus(400);
 
+    username = username.toLowerCase();
     const serviceURL = services.get(service);
     if (!serviceURL) return res.redirect(`?`);
 
@@ -256,11 +279,12 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/reset', async (req, res) => {
-    const { email, service } = req.body;
+    let { email, service } = req.body;
     const g_recaptcha_response = req.body['g-recaptcha-response'];
 
     if ( !g_recaptcha_response || !email ) return res.sendStatus(400);
 
+    email = email.toLowerCase();
     const serviceURL = services.get(service);
     if (!serviceURL) return res.redirect(`?`);
 

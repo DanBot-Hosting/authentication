@@ -42,7 +42,7 @@ if (fatalErrorBanner) {
 
 const text = document.getElementById('text');
 if (params.email && text) {
-    text.innerHTML = `You need to verify your email address! An email has been sent to ${params.email} please open the link inside. You will only have to do this once`;
+    text.innerHTML = `You need to verify your email address! An email has been sent to ${params.email} please open the link inside. You will only have to do this once. NOTE: the link will expire after half an hour.`;
 }
 
 function onsubmitRegister() {
