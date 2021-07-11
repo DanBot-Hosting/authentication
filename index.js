@@ -189,9 +189,9 @@ app.get('/verify/:token', async (req, res) => {
     };
 
     //confirm email code
-    await runMysql('UPDATE users SET verified = true WHERE email = ? ;', [data.email]);
+    await runMysql('UPDATE users SET verified = true WHERE upper(email) = upper(?) ;', [data.email]);
 
-    const userData = await runMysql('SELECT * FROM `users` WHERE `email` = ?', [data.email]);
+    const userData = await runMysql('SELECT * FROM `users` WHERE upper(`email`) = upper(?)', [data.email]);
     if (userData.length == 0) return
     const token = await createAuthToken(userData[0]);
 
@@ -222,13 +222,15 @@ app.post('/register', async (req, res) => {
     if (!validateEmail(email) ) return res.redirect(`?service=${service}&error=Enter a valid email`);
     if (new_password.length < 8 || new_password.length > 30 ) return res.redirect(`?service=${service}&error=Passwords must be between 8 and 30 characters`);
     if (new_password !== confirm_password) return res.redirect(`?service=${service}&error=Those passwords do not match!`);
+    if (!/^[a-zA-Z0-9-_]+$/.test(username)) return res.redirect(`?service=${service}&error=Not a valid username!`);
     
+
     //captcha
     const captchaResponse = await checkCaptchaResponse(g_recaptcha_response, req.ip);
     if (captchaResponse.success === false) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`?service=${service}&error=An error ocurred try again`);
 
-    const isUsernameTaken = await runMysql('SELECT count(username), count(email) FROM `users` WHERE `username` = ? OR `email` = ?', [username, email]);
+    const isUsernameTaken = await runMysql('SELECT count(username), count(email) FROM `users` WHERE upper(`username`) = upper(?) OR upper(`email`) = upper(?)', [username, email]);
 
     if (isUsernameTaken[0]['count(username)'] !== 0) return res.redirect(`?service=${service}&error=That username is taken!`);
     if (isUsernameTaken[0]['count(email)'] !== 0) return res.redirect(`?service=${service}&error=That email is taken!`);
@@ -261,7 +263,7 @@ app.post('/login', async (req, res) => {
     if (captchaResponse.success === false) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     
-    const userData = await runMysql('SELECT * FROM `users` WHERE `username` = ? OR `email` = ? ;', [username, username]);
+    const userData = await runMysql('SELECT * FROM `users` WHERE upper(`username`) = upper(?) OR upper(`email`) = upper(?) ;', [username, username]);
 
     if (userData.length === 0) return res.redirect(`?service=${service}&error=Wrong username/email or password`);
     const hashedPassword = await bcrypt.compare(current_password, userData[0].password);
@@ -292,7 +294,7 @@ app.post('/reset', async (req, res) => {
     if (captchaResponse.success === false) return res.redirect(`?service=${service}&error=An error ocurred try again`);
     if (captchaResponse.score < 0.5 ) return res.redirect(`?service=${service}&error=An error ocurred try again`);
 
-    const userData = await runMysql('SELECT * FROM `users` WHERE `email` = ? ;', [email]);
+    const userData = await runMysql('SELECT * FROM `users` WHERE upper(`email`) = upper(?) ;', [email]);
 
     if (userData.length === 0) return res.redirect(`?service=${service}&error=There is no account with that email!`);
 
