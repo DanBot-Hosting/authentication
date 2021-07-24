@@ -34,6 +34,7 @@ const services = new Map();
 services.set('cloud', 'https://danbot.cloud/callback');
 services.set('host', 'https://danbot.host/callback');
 services.set('test', 'https://freddie.pw/callback');
+services.set('danbot.host', 'http://192.168.0.27:3000/callback');
 Array.from(services.keys()).forEach(e => services.set(services.get(e), e));
 
 // const [rows, fields] = await connection.execute('SELECT * FROM `table` WHERE `name` = ? AND `age` > ?', ['Morty', 14]);
