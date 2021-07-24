@@ -200,7 +200,7 @@ app.get('/verify/:token', async (req, res) => {
 
 });
 app.get('*', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/login?service=danbot.host');
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));
