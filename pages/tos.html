@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="icon" href="logo.webp" type="logo.webp" sizes="16x16">
+		<link rel="stylesheet" href="styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://www.google.com/recaptcha/api.js?render=6Lc6dnwbAAAAAO4ipZBV07SNaehahLi61GDpxPkJ"></script>	
+		<meta charset="utf-8">
+		<title>Discord - DanBot Auth</title>
+
+	</head>
+	<button class="backButton" onclick="history.back(-1)">Back</button>
+
+	<body>
+		<div class="middle-menu" >
+			<div class="login-form ">
+				<img src="logo.webp" alt="Danbot Logo" id="danbot-logo" />
+				<h1>Danbot's Terms of Service have changed since you last visited!</h1>
+				<h1>Click <a target="_blank" href="https://cdn.danbot.host/terms-of-service.txt">here</a> to read them.</h1>
+				<a id="Accept" href="/tos-accept"><input type="submit" value="Accept TOS"></a>
+					<br>
+				<a onclick="window.history.back()"><input type="submit"  style="margin-top: 10px; background-color: rgb(252, 111, 111)" value="Reject TOS"></a>
+
+			</div>
+		</div>
+	</body>
+	<script src="/script.js"></script>
+	<script>
+		document.getElementById('discord').href = `https://discord.com/api/oauth2/authorize?client_id=${params.id}&redirect_uri=${window.location.origin}/callback&response_type=code&state=${params.state}&scope=identify`;
+	</script>
+</html>

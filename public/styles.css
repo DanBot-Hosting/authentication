@@ -109,3 +109,6 @@ a:link {
   a:active {
     color: blue;
   }
+.rejectTOS{
+    color: red !important;
+}
