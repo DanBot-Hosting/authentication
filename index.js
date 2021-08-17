@@ -30,8 +30,8 @@ const garbageCollector = setInterval( () => {
 }, 1000 * 60 * 5);
 
 const services = new Map();
-// services.set('cloud', 'http://192.168.0.27:3000/callback');
-services.set('cloud', 'https://danbot.cloud/callback');
+services.set('cloud', 'http://192.168.0.27:3000/callback');
+// services.set('cloud', 'https://danbot.cloud/callback');
 services.set('host', 'https://danbot.host/callback');
 services.set('test', 'https://freddie.pw/callback');
 services.set('danbot.host', 'http://192.168.0.27:3000/callback');
@@ -181,6 +181,12 @@ app.get('/reset/new-password', (req, res) => {
 app.get('/verify', (req, res) => {
     fs.createReadStream('./pages/verify.html').pipe(res);
 });
+app.get('/discord', (req, res) => {
+    fs.createReadStream('./pages/discord.html').pipe(res);
+});
+app.get('/tos', (req, res) => {
+    fs.createReadStream('./pages/tos.html').pipe(res);
+});
 app.get('/verify/:token', async (req, res) => {
     const data = verification.get(req.params.token);
     if (!data) return res.send('Expired token!');
@@ -274,6 +280,10 @@ app.post('/login', async (req, res) => {
     if (!user.verified) {
         await sendVerifyEmail(user.email, userData[0].username, req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.ip, 'verifyEmail', serviceURL);
         return res.redirect(`/verify?email=${user.email}`);
+    };
+
+    if (!user.lastTosAccept || new Date(user.lastTosAccept) < lastTosUpdate){
+
     };
 
     const token = await createAuthToken(user);
