@@ -31,7 +31,8 @@ const garbageCollector = setInterval( () => {
 
 const services = new Map();
 // services.set('cloud', 'http://192.168.0.27:3000/callback');
-services.set('cloud', 'https://danbot.cloud/callback');
+services.set('cloud', 'https://beta.danbot.cloud/callback');
+services.set('cloudPRD', 'https:/danbot.cloud/callback');
 services.set('host', 'https://danbot.host/callback'); 
 services.set('test', 'https://freddie.pw/callback');
 services.set('vpn.site', 'https://vpn.danbot.host/callback');
