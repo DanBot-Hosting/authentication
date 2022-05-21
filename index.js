@@ -37,6 +37,7 @@ services.set('host', 'https://danbot.host/callback');
 services.set('test', 'https://freddie.pw/callback');
 services.set('vpn.site', 'https://vpn.danbot.host/callback');
 services.set('vpn.local', 'http://127.0.0.1:45359/');
+services.set('vpn.auth', 'https://api.vpn.danbot.host/auth/callback');
 services.set('danbot.host', 'http://192.168.0.27:3000/callback');
 services.set('admin', 'https://admin.danbot.host');
 Array.from(services.keys()).forEach(e => services.set(services.get(e), e));
